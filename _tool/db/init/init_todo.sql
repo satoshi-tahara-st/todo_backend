@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS todo_database;
-CREATE DATABASE todo_database;
-USE todo_database;
+DROP DATABASE IF EXISTS todo_db;
+CREATE DATABASE todo_db;
+USE todo_db;
 
 CREATE TABLE IF NOT EXISTS `user_t` (
     `user_id` varchar(128) NOT NULL,

@@ -1,0 +1,95 @@
+version: 3
+
+vars:
+  BIN_DIR: "./bin"
+  PROJECT_NAME: "todo_backend"
+  TOOL_DIR: "./_tool"
+
+tasks:
+  default:
+    cmds:
+      - task: help
+
+  help:
+    silent: true
+    desc: "タスク一覧を表示"
+    cmds:
+      - task -l
+
+  install-tools:
+    desc: "開発に必要なツールをインストールします"
+    cmds:
+      - go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
+      - go install honnef.co/go/tools/cmd/staticcheck@latest
+      - go install golang.org/x/tools/cmd/goimports@latest
+      - go install github.com/alvaroloes/enumer@latest
+      - go install github.com/golang/mock/mockgen@latest
+
+  build:
+    desc: "go buildを実行します"
+    cmds:
+      - go build -trimpath -o {{.BIN_DIR}}/ ./cmd/{{.PROJECT_NAME}}
+
+  start:local:
+    desc: "サーバーを起動します"
+    cmds:
+      - STAGE=development PRODUCT=todo {{.BIN_DIR}}/{{.PROJECT_NAME}}
+
+  start-db:
+    desc: "ローカルDBを構築します"
+    cmds:
+      - docker compose -f {{.TOOL_DIR}}/db/docker-compose.yml down
+      - docker compose -f {{.TOOL_DIR}}/db/docker-compose.yml up -d
+
+  # clean-db:
+  #   desc: "ローカルDBを掃除します"
+  #   cmds:
+  #     - docker compose -f {{.TOOL_DIR}}/db/docker-compose.yml down
+  #     - rm -rfv {{.TOOL_DIR}}/db/db_local
+  #     - mkdir {{.TOOL_DIR}}/db/db_local
+  #     - chmod 777 {{.TOOL_DIR}}/db/db_local
+
+  show-db-log:
+    desc: "ローカルDBのログを表示します"
+    cmds:
+      - cd {{.TOOL_DIR}}/db; docker compose logs
+
+  shutdown-db:
+    desc: "ローカルDBを終了します"
+    cmds:
+      - docker compose -f {{.TOOL_DIR}}/db/docker-compose.yml down
+
+  openapi-merge:
+    desc: "OpenAPI仕様書をマージします"
+    cmds:
+      - openapi-merge -i ./spec -o openapi.yaml
+
+  openapi-generate:
+    desc: "OpenAPI仕様書からコードを自動生成します. openapi.yamlを編集したあと実行してください."
+    cmds:
+      - openapi-merge -i ./spec -o openapi.yaml
+      - oapi-codegen -config oapi-codegen-config.yaml openapi.yaml
+
+  # openapi-spec:
+  #   desc: "OpenAPI仕様書htmlを生成します"
+  #   cmds:
+  #     - openapi-merge -i ./spec -o openapi.yaml
+  #     - docker build -f {{.TOOL_DIR}}/redoc/Dockerfile -t redoc .
+  #     - docker run --rm -v $(pwd):/workspace redoc redoc-cli build openapi.yaml -o {{.TOOL_DIR}}/redoc/index.html
+
+  lint:
+    desc: "lintを実行します"
+    cmds:
+      - staticcheck ./...
+
+  fmt:
+    desc: "フォーマットを実行します"
+    cmds:
+      - go fmt ./...
+      - goimports -w -l -local "github.com/satoshi-tahara-st/{{.PROJECT_NAME}}"
+
+  generate:
+    desc: "コード生成を実行します"
+    cmds:
+      - go generate ./...
+      - task openapi-generate

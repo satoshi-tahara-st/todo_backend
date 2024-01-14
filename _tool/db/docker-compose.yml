@@ -4,12 +4,12 @@ services:
     platform: linux/amd64
     container_name: todo-app-db
     build:
-      context: ./_tool/db
+      context: ./
       dockerfile: Dockerfile.db
     volumes:
       - todo-app-store:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=todo_database
+      - MYSQL_DATABASE=todo_db
       - MYSQL_USER=todo
       - MYSQL_PASSWORD=todo
       - MYSQL_ROOT_PASSWORD=todo
