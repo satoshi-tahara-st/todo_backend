@@ -62,20 +62,25 @@ tasks:
   openapi-merge:
     desc: "OpenAPI仕様書をマージします"
     cmds:
-      - openapi-merge -i ./spec -o openapi.yaml
+      - openapi-merge -i ./spec -o openapi.yml
 
   openapi-generate:
-    desc: "OpenAPI仕様書からコードを自動生成します. openapi.yamlを編集したあと実行してください."
+    desc: "OpenAPI仕様書からコードを自動生成します. openapi.ymlを編集したあと実行してください."
     cmds:
-      - openapi-merge -i ./spec -o openapi.yaml
-      - oapi-codegen -config oapi-codegen-config.yaml openapi.yaml
+      - oapi-codegen -config oapi-codegen-config.yml openapi.yml
+
+  # openapi-generate:
+  #   desc: "OpenAPI仕様書からコードを自動生成します. openapi.ymlを編集したあと実行してください."
+  #   cmds:
+  #     - openapi-merge -i ./spec -o openapi.yml
+  #     - oapi-codegen -config oapi-codegen-config.yml openapi.yml
 
   # openapi-spec:
   #   desc: "OpenAPI仕様書htmlを生成します"
   #   cmds:
-  #     - openapi-merge -i ./spec -o openapi.yaml
+  #     - openapi-merge -i ./spec -o openapi.yml
   #     - docker build -f {{.TOOL_DIR}}/redoc/Dockerfile -t redoc .
-  #     - docker run --rm -v $(pwd):/workspace redoc redoc-cli build openapi.yaml -o {{.TOOL_DIR}}/redoc/index.html
+  #     - docker run --rm -v $(pwd):/workspace redoc redoc-cli build openapi.yml -o {{.TOOL_DIR}}/redoc/index.html
 
   lint:
     desc: "lintを実行します"

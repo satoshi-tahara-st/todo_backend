@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  description: ""
+  title: "todo_backend"
+  version: v0.0.1
+servers:
+  - description: Local Server
+    url: http://localhost:1325
+paths:
+  /health:
+    get:
+      operationId: health
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+          description: successful operation
+      summary: Health check
+      tags:
+        - admin
+  /api/user:
+    get:
+      operationId: get-user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userResponse"
+          description: OK
+      summary: ユーザーを取得する
+components:
+  schemas:
+    Errors:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+      type: object
+    HealthResponse:
+      type: string
+    userResponse:
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+      required:
+        - userId
+        - name
+      type: object

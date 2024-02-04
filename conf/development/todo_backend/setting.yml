@@ -1,0 +1,19 @@
+stage: local
+db:
+  todo_backend:
+    driver: mysql
+    db_name: todo_db
+    ref:
+      username: todo
+      password: todo
+      host: localhost:3306
+      max_open_conns: 5
+      max_idle_conns: 5
+      conn_max_lifetime_seconds: 60
+    # upd:
+    #   username: todo
+    #   password: todo
+    #   host: localhost:3306
+    #   max_open_conns: 5
+    #   max_idle_conns: 5
+    #   conn_max_lifetime_seconds: 60
